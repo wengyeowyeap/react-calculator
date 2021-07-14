@@ -1,25 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import CalculatorDisplay from "./components/CalculatorDisplay";
+import KeyPad from "./components/KeyPad";
 
 function App() {
+  const [result, setResult] = useState("");
+  const calculate = () => {
+    try {
+      setResult((eval(result) || "") + "");
+    } catch (e) {
+      setResult("error");
+    }
+  };
+
+  const performCalculation = key => {
+    if (key === "=") {
+      calculate();
+    } else if (key === "AC") {
+      setResult("");
+    } else if (key === "C") {
+      if (result === "error") {
+        setResult("")
+      } else {
+        setResult(result.slice(0, -1));
+      }
+    } else {
+      setResult(result + key);
+    }
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <div style={{ width: "100%" }}>
+        <div style={{
+          width: "350px",
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <CalculatorDisplay result={result} />
+          <KeyPad performCalculation={performCalculation} />
+        </div>
+      </div>
+    </>
   );
 }
 
